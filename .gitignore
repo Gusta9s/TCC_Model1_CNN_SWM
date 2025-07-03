@@ -8,6 +8,7 @@
 # Nunca comite a pasta do seu ambiente virtual.
 .env
 .venv
+venv
 env/
 venv/
 ENV/
@@ -98,6 +99,7 @@ wheels/
 # Arquivos de log e relatórios gerados pela sua aplicação.
 *.log
 logs/
+*/logs/
 log/
 celerybeat-schedule
 *.pid
