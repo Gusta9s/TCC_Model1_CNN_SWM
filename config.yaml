@@ -1,0 +1,46 @@
+# Configuração Geral do Projeto
+project_name: "TCC_Modelo_TensorFlow_SWM"
+log_file: "logs/app.log"
+
+# Configuração dos Dados
+data:
+  raw_path: "data/raw/"
+  processed_path: "data/processed/"
+  image_size: [256, 256]
+  batch_size: 32
+  color_mode: "rgb"
+  lata_folder_validation: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/validation/lata'
+  pet_folder_validation: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/validation/garrafa_pet'
+  vinho_folder_validation: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/validation/garrafa_de_vinho'
+  leite_folder_validation: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/validation/garrafa_de_leite'
+  lata_folder_test: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/test/lata'
+  pet_folder_test: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/test/garrafa_pet'
+  vinho_folder_test: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/test/garrafa_de_vinho'
+  leite_folder_test: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/test/garrafa_de_leite'
+  lata_folder_train: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/train/lata'
+  pet_folder_train: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/train/garrafa_pet'
+  vinho_folder_train: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/train/garrafa_de_vinho'
+  leite_folder_train: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/train/garrafa_de_leite'
+
+# Configuração do Modelo
+model:
+  architecture: "Sequential" # Nome da arquitetura para referência
+  input_shape: [256, 256, 3] # Altura, Largura, Canais (deve corresponder a image_size e color_mode)
+  num_classes: 2 # Número de classes (A, B)
+  
+# Configuração do Treinamento
+training:
+  epochs: 25
+  optimizer: "adam"
+  loss_function: "sparse_categorical_crossentropy" # Use 'categorical_crossentropy' se suas labels forem one-hot encoded
+  learning_rate: 0.001
+  metrics: ["accuracy"]
+  # Caminho para salvar o melhor modelo durante o treinamento
+  save_model_path: "models/meu_modelo_cnn_best.h5" 
+
+# Configuração da Previsão
+prediction:
+  # Caminho do modelo treinado a ser usado para predição
+  model_path: "models/meu_modelo_cnn_best.h5" 
+  # Mapeamento de índice para nome de classe
+  class_names: ["ComMascara", "SemMascara"] 
