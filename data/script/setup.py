@@ -88,7 +88,7 @@ def processo_principal():
     foreach_vinho_files(files_vinho)
     foreach_leite_files(files_leite)
 
-if __name__ == '__main__':
+def move_files_to_directories():
     processo_principal()
     print('Processamento concluído com sucesso!')
     print('Arquivos de lata, garrafa pet, garrafa de vinho e garrafa de leite foram movidos para os diretórios de validação, teste e treinamento.')
