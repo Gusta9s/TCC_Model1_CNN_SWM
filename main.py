@@ -81,7 +81,7 @@ def main():
         data.script.setup.move_files_to_directories()
 
         # 1. Carregar Dados
-        train_ds, val_ds, test_ds = load_datasets(config)
+        train_ds, val_ds = load_datasets(config)
         if train_ds is None:
             logging.error("Finalizando execução devido a erro no carregamento de dados.")
             return
