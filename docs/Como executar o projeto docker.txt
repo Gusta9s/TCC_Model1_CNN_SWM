@@ -1,0 +1,17 @@
+Com o Dockerfile e o app.py prontos, você já pode construir a sua imagem Docker e executar o container.
+
+    Construa a Imagem Docker: No terminal, na raiz do seu projeto, execute:
+
+sudo docker build -t tcc-modelo-cnn .
+
+    -t tcc-modelo-cnn: Define o nome da sua imagem como tcc-modelo-cnn.
+
+    .: Indica que o Dockerfile está no diretório atual.
+
+Execute o Container: Após o build ser concluído com sucesso, execute o container:
+
+    sudo docker run -p 3001:3001 tcc-modelo-cnn
+
+        -p 3001:3001: Mapeia a porta 3001 do container para a porta 3001 da sua máquina.
+
+        tcc-modelo-cnn: O nome da imagem que você acabou de criar.

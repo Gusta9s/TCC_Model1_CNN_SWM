@@ -1,60 +1,60 @@
 import glob, random, shutil
+from pathlib import Path
 
 proporcion_validation = 0.30
 
-path_project = '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM'
-path_to_lata_src = path_project + '/data/raw/lata'
-path_to_garrafa_src = path_project + '/data/raw/garrafa'
-path_to_tenis_src = path_project + '/data/raw/tenis'
-path_to_saco_de_cha_src = path_project + '/data/raw/sacos_de_cha'
+path_to_lata_src = Path('lata')
+path_to_garrafa_src = Path('garrafa')
+path_to_tenis_src = Path('tenis')
+path_to_saco_de_cha_src = Path('sacos_de_cha')
 
-path_to_lata_dst_train = path_project + '/data/processed/train/lata'
-path_to_lata_dst_validate = path_project + '/data/processed/validation/lata'
+path_to_lata_dst_train = Path('lata_train')
+path_to_lata_dst_validate = Path('lata_validation')
 
-path_to_garrafa_dst_train = path_project + '/data/processed/train/garrafa'
-path_to_garrafa_dst_validate = path_project + '/data/processed/validation/garrafa'
+path_to_garrafa_dst_train = Path('garrafa_train')
+path_to_garrafa_dst_validate = Path('garrafa_validation')
 
-path_to_tenis_dst_train = path_project + '/data/processed/train/tenis'
-path_to_tenis_dst_validate = path_project + '/data/processed/validation/tenis'
+path_to_tenis_dst_train = Path('tenis_train')
+path_to_tenis_dst_validate = Path('tenis_validation')
 
-path_to_saco_de_cha_dst_train = path_project + '/data/processed/train/sacos_de_cha'
-path_to_saco_de_cha_dst_validate = path_project + '/data/processed/validation/sacos_de_cha'
+path_to_saco_de_cha_dst_train = Path('sacos_de_cha_train')
+path_to_saco_de_cha_dst_validate = Path('sacos_de_cha_validation')
 
 def foreach_garrafa_files(files):
     for foto in files:
         random_value = random.random()
         filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_garrafa_dst_validate + '/' + filename)
+            shutil.move(foto, path_to_garrafa_dst_validate / filename)
         else:
-            shutil.move(foto, path_to_garrafa_dst_train + '/' + filename)
+            shutil.move(foto, path_to_garrafa_dst_train / filename)
 
 def foreach_lata_files(files):
     for foto in files:
         random_value = random.random()
         filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_lata_dst_validate + '/' + filename)
+            shutil.move(foto, path_to_lata_dst_validate / filename)
         else:
-            shutil.move(foto, path_to_lata_dst_train + '/' + filename)
+            shutil.move(foto, path_to_lata_dst_train / filename)
 
 def foreach_tenis_files(files):
     for foto in files:
         random_value = random.random()
         filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_tenis_dst_validate + '/' + filename)
+            shutil.move(foto, path_to_tenis_dst_validate / filename)
         else:
-            shutil.move(foto, path_to_tenis_dst_train + '/' + filename)
+            shutil.move(foto, path_to_tenis_dst_train / filename)
 
 def foreach_sacos_de_cha_files(files):
     for foto in files:
         random_value = random.random()
         filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_saco_de_cha_dst_validate + '/' + filename)
+            shutil.move(foto, path_to_saco_de_cha_dst_validate / filename)
         else:
-            shutil.move(foto, path_to_saco_de_cha_dst_train + '/' + filename)
+            shutil.move(foto, path_to_saco_de_cha_dst_train / filename)
 
 def get_files_lata():
     return glob.glob(path_to_lata_src + '/*')

@@ -4,14 +4,15 @@ from tensorflow import expand_dims
 from tensorflow.nn import softmax
 from numpy import argmax, max
 import logging
+from io import BytesIO
 
-def predict_on_image(config: dict, image_path: str):
+def predict_on_image(config: dict, image_file):
     """
-    Carrega um modelo treinado e faz uma previsão em uma única imagem.
+    Carrega um modelo treinado e faz uma previsão em uma única imagem recebida como arquivo.
     
     Args:
         config (dict): Dicionário de configuração.
-        image_path (str): Caminho para a imagem a ser classificada.
+        image_file: Arquivo de imagem recebido (objeto FileStorage do Flask).
     
     Returns:
         tuple: (nome_da_classe_prevista, confiança)
@@ -24,7 +25,7 @@ def predict_on_image(config: dict, image_path: str):
         image_size = tuple(config['data']['image_size'])
         class_names = config['prediction']['class_names']
 
-        img = load_img(image_path, target_size=image_size)
+        img = load_img(BytesIO(image_file.read()), target_size=image_size)
         img_array = img_to_array(img)
         img_array = expand_dims(img_array, 0) # Cria um batch
 
@@ -35,10 +36,10 @@ def predict_on_image(config: dict, image_path: str):
         confidence = 100 * max(score)
 
         logging.info(
-            f"A imagem '{image_path}' pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança."
+            f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança."
         )
 
-        print(f"A imagem '{image_path}' pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança.")
+        print(f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança.")
         
         return predicted_class, confidence
 

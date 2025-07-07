@@ -25,6 +25,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.so
+*.wsgi
 
 # Cache de pacotes e testes
 .pytest_cache/
