@@ -5,8 +5,9 @@ from tensorflow.nn import softmax
 from numpy import argmax, max
 import logging
 from io import BytesIO
+from pathlib import Path
 
-def predict_on_image(config: dict, image_file):
+def predict_on_image(config: dict, image_file, train_ds):
     """
     Carrega um modelo treinado e faz uma previsão em uma única imagem recebida como arquivo.
     
@@ -19,11 +20,12 @@ def predict_on_image(config: dict, image_file):
     """
 
     try:
-        logging.info(f"Carregando modelo de: {config['prediction']['model_path']}")
-        model = load_model(config['prediction']['model_path'])
+        path_to_model = Path('./models/modelo.keras')
+        logging.info(f"Carregando modelo de: {path_to_model.resolve()}")
+        model = load_model(path_to_model.resolve())
         
         image_size = tuple(config['data']['image_size'])
-        class_names = config['prediction']['class_names']
+        class_names = train_ds.class_names if train_ds else config['prediction']['class_names']
 
         img = load_img(BytesIO(image_file.read()), target_size=image_size)
         img_array = img_to_array(img)

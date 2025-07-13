@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
-import tensorflow as tf
 import yaml
 import logging
 import os
+from pathlib import Path
 
 # Importa as funções dos módulos do seu aplicativo
 from src.tcc_modelo_swm.data_loader import load_datasets
@@ -27,10 +27,10 @@ def setup_logging(log_file_path: str):
     )
 
 def load_config_from_secret():
-    config_path = os.environ.get('CONFIG_SECRET_PATH', 'config.yaml')
+    path_to_yaml = Path('config.yaml')
     try:
-        with open(config_path, 'r') as file:
-            config = yaml.safe_load(file)
+        if path_to_yaml.exists():
+            config = yaml.safe_load(path_to_yaml.read_text(encoding="utf-8"))
         logging.info("Arquivo de configuração carregado com sucesso.")
         return config
     except FileNotFoundError:
@@ -49,6 +49,7 @@ def predict():
         return jsonify({"error": "Configuração não encontrada."}), 500
 
     setup_logging(config['log_file'])
+    train_ds = None
 
     # Espera receber {"command": "train"} ou {"command": "predict", "image": arquivo binário}
     if request.content_type.startswith('application/json'):
@@ -76,9 +77,9 @@ def predict():
         if not image_file:
             return jsonify({"error": "Arquivo de imagem não fornecido."}), 400
         logging.info("--- INICIANDO MODO DE PREDIÇÃO ---")
-        predicted_class, confidence = predict_on_image(config, image_file)
+        predicted_class, confidence = predict_on_image(config, image_file, train_ds)
         logging.info("--- PREDIÇÃO CONCLUÍDA ---")
-        return jsonify({"prediction": predicted_class, "confidence": confidence})
+        return jsonify({"prediction": predicted_class, "confidence": float(confidence)})
 
     else:
         return jsonify({"error": "Comando inválido. Use 'train' ou 'predict'."}), 400

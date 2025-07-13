@@ -60,6 +60,7 @@ secrets.toml
 *.boto
 *secret*.json
 google_credentials.json
+resource/
 
 # Arquivos temporários do Spark/Hadoop
 *.crc

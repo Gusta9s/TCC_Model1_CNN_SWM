@@ -24,19 +24,19 @@ def create_model(config: dict) -> tf.keras.Model:
         Input(shape=input_shape), # Define a forma de entrada do modelo
         Rescaling(1./255), # Tranforma a imagem para tons de cinza por filtragem
 
-        # Bloco Convolucional 3
+        # Bloco Convolucional 1
         Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D((2, 2)),
 
+        # Bloco Convolucional 2
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
+
+        # Bloco Convolucional 3
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
+
         # Bloco Convolucional 4
-        Conv2D(64, (3, 3), activation='relu'),
-        MaxPooling2D((2, 2)),
-
-        # Bloco Convolucional 5
-        Conv2D(64, (3, 3), activation='relu'),
-        MaxPooling2D((2, 2)),
-
-        # Bloco Convolucional 5
         Conv2D(128, (3, 3), activation='relu'),
         MaxPooling2D((2, 2)),
 

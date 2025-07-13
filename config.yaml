@@ -4,14 +4,9 @@ log_file: "logs/app.log"
 
 # Configuração dos Dados
 data:
-  raw_path: "/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/raw/"
-  processed_path: "/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/"
   image_size: [256, 256]
   batch_size: 64
   color_mode: "rgb"
-  train_dir: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/train'
-  validation_dir: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/data/processed/validation'
-  model_save_path: '/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/models/reciclagem_classifier.keras'
 
 # Configuração do Modelo
 model:
@@ -24,13 +19,9 @@ training:
   optimizer: "adam"
   loss_function: "sparse_categorical_crossentropy" # Use 'categorical_crossentropy' se suas labels forem label_mode = 'int'
   learning_rate: 0.001
-  metrics: ["accuracy"]
-  # Caminho para salvar o melhor modelo durante o treinamento
-  save_model_path: "/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/models/reciclagem_classifier.keras" 
+  metrics: ["accuracy"] 
 
 # Configuração da Previsão
 prediction:
-  # Caminho do modelo treinado a ser usado para predição
-  model_path: "/home/gustavo/Projetos/TCC_Modelo_TensorFlow_SWM/models/reciclagem_classifier.keras"
   # Mapeamento de índice para nome de classe
-  class_names: ["garrafa", "lata", "tenis", "saco_de_cha"] 
+  class_names: ["caixa_de_papelao", "garrafa", "lata", "tenis"]

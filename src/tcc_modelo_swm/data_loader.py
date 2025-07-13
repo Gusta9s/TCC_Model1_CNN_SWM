@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.utils import image_dataset_from_directory as ims
+from pathlib import Path
 import logging
 
 
@@ -15,15 +16,15 @@ def load_datasets(config: dict):
     """
 
     try:
-        train_ds = config['data']['train_dir']
-        val_ds = config['data']['validation_dir']
+        train_ds = Path('./data/processed/train')
+        val_ds = Path('./data/processed/validation')
         image_size = tuple(config['data']['image_size'])
         batch_size = config['data']['batch_size']
 
-        logging.info(f"Carregando dados de: {train_ds}")
+        logging.info(f"Carregando dados de: {train_ds.resolve()}")
 
         train_ds_completo = ims(
-            train_ds,
+            train_ds.resolve(),
             labels='inferred', # Infire as classes a partir dos nomes das pastas
             label_mode='int', # 0 para 'caixa_de_detergente', 1 para 'caixa_de_leite', etc.
             image_size=image_size,
@@ -32,10 +33,10 @@ def load_datasets(config: dict):
             shuffle=True
         )
 
-        logging.info(f"Carregando dados de: {val_ds}")
+        logging.info(f"Carregando dados de: {val_ds.resolve()}")
 
         val_ds_completo = ims(
-            val_ds,
+            val_ds.resolve(),
             labels='inferred',
             label_mode='int',
             image_size=image_size,

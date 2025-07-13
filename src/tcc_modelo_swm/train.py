@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from pathlib import Path
 import logging
 
 def train_model(config: dict, model: tf.keras.Model, train_ds, val_ds):
@@ -14,10 +15,11 @@ def train_model(config: dict, model: tf.keras.Model, train_ds, val_ds):
     """
 
     logging.info("Iniciando o processo de treinamento.")
+    path_to_model = Path('./models/modelo.keras')
     
     # Callbacks
     checkpoint = ModelCheckpoint(
-        filepath=config['training']['save_model_path'],
+        filepath=path_to_model.resolve(),
         save_best_only=True,
         monitor='val_loss',
         mode='min',
@@ -46,4 +48,4 @@ def train_model(config: dict, model: tf.keras.Model, train_ds, val_ds):
         validation_data=val_ds,
         callbacks=[checkpoint, early_stopping]
     )
-    logging.info(f"Treinamento concluído. Melhor modelo salvo em: {config['training']['save_model_path']}")
+    logging.info(f"Treinamento concluído. Melhor modelo salvo em: {path_to_model.resolve()}")

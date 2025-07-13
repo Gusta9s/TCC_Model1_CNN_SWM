@@ -1,83 +1,79 @@
-import glob, random, shutil
+import random, shutil
 from pathlib import Path
 
 proporcion_validation = 0.30
 
-path_to_lata_src = Path('lata')
-path_to_garrafa_src = Path('garrafa')
-path_to_tenis_src = Path('tenis')
-path_to_saco_de_cha_src = Path('sacos_de_cha')
+path_to_lata_src = Path('./data/raw/lata')
+path_to_garrafa_src = Path('./data/raw/garrafa')
+path_to_tenis_src = Path('./data/raw/tenis')
+path_to_caixa_de_papelao_src = Path('./data/raw/caixa_de_papelao')
 
-path_to_lata_dst_train = Path('lata_train')
-path_to_lata_dst_validate = Path('lata_validation')
+path_to_lata_dst_train = Path('./data/processed/train/lata')
+path_to_lata_dst_validate = Path('./data/processed/validation/lata')
 
-path_to_garrafa_dst_train = Path('garrafa_train')
-path_to_garrafa_dst_validate = Path('garrafa_validation')
+path_to_garrafa_dst_train = Path('./data/processed/train/garrafa')
+path_to_garrafa_dst_validate = Path('./data/processed/validation/garrafa')
 
-path_to_tenis_dst_train = Path('tenis_train')
-path_to_tenis_dst_validate = Path('tenis_validation')
+path_to_tenis_dst_train = Path('./data/processed/train/tenis')
+path_to_tenis_dst_validate = Path('./data/processed/validation/tenis')
 
-path_to_saco_de_cha_dst_train = Path('sacos_de_cha_train')
-path_to_saco_de_cha_dst_validate = Path('sacos_de_cha_validation')
+path_to_caixa_de_papelao_dst_train = Path('./data/processed/train/caixa_de_papelao')
+path_to_caixa_de_papelao_dst_validate = Path('./data/processed/validation/caixa_de_papelao')
 
 def foreach_garrafa_files(files):
     for foto in files:
         random_value = random.random()
-        filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_garrafa_dst_validate / filename)
+            shutil.move(foto.resolve(), path_to_garrafa_dst_validate.resolve() / foto.name)
         else:
-            shutil.move(foto, path_to_garrafa_dst_train / filename)
+            shutil.move(foto.resolve(), path_to_garrafa_dst_train.resolve() / foto.name)
 
 def foreach_lata_files(files):
     for foto in files:
         random_value = random.random()
-        filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_lata_dst_validate / filename)
+            shutil.move(foto.resolve(), path_to_lata_dst_validate.resolve() / foto.name)
         else:
-            shutil.move(foto, path_to_lata_dst_train / filename)
+            shutil.move(foto.resolve(), path_to_lata_dst_train.resolve() / foto.name)
 
 def foreach_tenis_files(files):
     for foto in files:
         random_value = random.random()
-        filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_tenis_dst_validate / filename)
+            shutil.move(foto.resolve(), path_to_tenis_dst_validate.resolve() / foto.name)
         else:
-            shutil.move(foto, path_to_tenis_dst_train / filename)
+            shutil.move(foto.resolve(), path_to_tenis_dst_train.resolve() / foto.name)
 
-def foreach_sacos_de_cha_files(files):
+def foreach_caixa_de_papelao_files(files):
     for foto in files:
         random_value = random.random()
-        filename = foto.split('/')[-1]
         if random_value <= proporcion_validation:
-            shutil.move(foto, path_to_saco_de_cha_dst_validate / filename)
+            shutil.move(foto.resolve(), path_to_caixa_de_papelao_dst_validate.resolve() / foto.name)
         else:
-            shutil.move(foto, path_to_saco_de_cha_dst_train / filename)
+            shutil.move(foto.resolve(), path_to_caixa_de_papelao_dst_train.resolve() / foto.name)
 
 def get_files_lata():
-    return glob.glob(path_to_lata_src + '/*')
+    return path_to_lata_src.glob('*')
 
 def get_files_garrafa():
-    return glob.glob(path_to_garrafa_src + '/*')
+    return path_to_garrafa_src.glob('*')
 
 def get_files_tenis():
-    return glob.glob(path_to_tenis_src + '/*')
+    return path_to_tenis_src.glob('*')
 
-def get_files_sacos_de_cha():
-    return glob.glob(path_to_saco_de_cha_src + '/*')
+def get_files_caixa_de_papelao():
+    return path_to_caixa_de_papelao_src.glob('*')
 
 def processo_principal():
     files_lata = get_files_lata()
     files_garrafa = get_files_garrafa()
     files_tenis = get_files_tenis()
-    files_sacos_de_cha = get_files_sacos_de_cha()
+    files_caixa_de_papelao = get_files_caixa_de_papelao()
 
     foreach_lata_files(files_lata)
     foreach_garrafa_files(files_garrafa)
     foreach_tenis_files(files_tenis)
-    foreach_sacos_de_cha_files(files_sacos_de_cha)
+    foreach_caixa_de_papelao_files(files_caixa_de_papelao)
 
 def move_files_to_directories():
     processo_principal()
