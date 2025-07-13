@@ -27,6 +27,9 @@ def predict_on_image(config: dict, image_file, train_ds):
         image_size = tuple(config['data']['image_size'])
         class_names = train_ds.class_names if train_ds else config['prediction']['class_names']
 
+        # Define o limiar de confiança mínimo (ex: 75%)
+        THRESHOLD = 35.0
+
         img = load_img(BytesIO(image_file.read()), target_size=image_size)
         img_array = img_to_array(img)
         img_array = expand_dims(img_array, 0) # Cria um batch
@@ -36,6 +39,13 @@ def predict_on_image(config: dict, image_file, train_ds):
         
         predicted_class = class_names[argmax(score)]
         confidence = 100 * max(score)
+
+        if confidence < THRESHOLD:
+            logging.info(
+                f"Previsão descartada. Confiança de {confidence:.2f}% é inferior ao limiar de {THRESHOLD}%."
+            )
+
+            return "Nenhum objeto detectado", confidence
 
         logging.info(
             f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança."
