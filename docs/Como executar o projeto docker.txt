@@ -10,9 +10,10 @@ sudo docker build -t tcc-modelo-cnn .
 
 Execute o Container: Após o build ser concluído com sucesso, execute o container:
 
-    sudo docker run -p 3001:3001 tcc-modelo-cnn
+    sudo docker run --add-host=host.docker.internal:host-gateway -p 3001:3001 tcc-modelo-cnn
 
         -p 3001:3001: Mapeia a porta 3001 do container para a porta 3001 da sua máquina.
         -d (antes do -p): Roda em segundo plano
+        --add-host=host.docker.internal:host-gateway: Isso diz ao contêiner: "Quando alguém procurar por host.docker.internal, resolva para o endereço de IP do host na rede interna do Docker".
 
         tcc-modelo-cnn: O nome da imagem que você acabou de criar.

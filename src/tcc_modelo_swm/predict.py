@@ -45,7 +45,7 @@ def predict_on_image(config: dict, image_file, train_ds):
                 f"Previsão descartada. Confiança de {confidence:.2f}% é inferior ao limiar de {THRESHOLD}%."
             )
 
-            return "Nenhum objeto detectado", confidence
+            return "Vazio", confidence
 
         logging.info(
             f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança."
