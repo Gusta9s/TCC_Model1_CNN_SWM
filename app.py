@@ -73,7 +73,7 @@ def load_config_from_secret():
         logging.info("Arquivo de configuração carregado com sucesso.")
         return config
     except FileNotFoundError:
-        logging.error(f"Erro: O arquivo de configuração '{config_path}' não foi encontrado.")
+        logging.error(f"Erro: O arquivo de configuração '{path_to_yaml.resolve()}' não foi encontrado.")
         return None
 
 @app.route('/')
