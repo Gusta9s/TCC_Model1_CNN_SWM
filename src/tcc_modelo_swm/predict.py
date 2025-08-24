@@ -1,58 +1,67 @@
-from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import load_img, img_to_array
-from tensorflow import expand_dims
-from tensorflow.nn import softmax
-from numpy import argmax, max
 import logging
-from io import BytesIO
+from ultralytics import YOLO
+import cv2
+import numpy as np
 from pathlib import Path
 
-def predict_on_image(config: dict, image_file, train_ds):
+def predict_on_image(config: dict, image_file):
     """
-    Carrega um modelo treinado e faz uma previsão em uma única imagem recebida como arquivo.
+    Carrega um modelo treinado YOLO e faz uma previsão em uma única imagem recebida como arquivo.
     
     Args:
         config (dict): Dicionário de configuração.
         image_file: Arquivo de imagem recebido (objeto FileStorage do Flask).
-    
+
     Returns:
         tuple: (nome_da_classe_prevista, confiança)
     """
 
     try:
-        path_to_model = Path('./models/modelo.keras')
-        logging.info(f"Carregando modelo de: {path_to_model.resolve()}")
-        model = load_model(path_to_model.resolve())
-        
-        image_size = tuple(config['data']['image_size'])
-        class_names = train_ds.class_names if train_ds else config['prediction']['class_names']
-
-        # Define o limiar de confiança mínimo (ex: 75%)
+        # Define o limiar de confiança mínimo (ex: 35%)
         THRESHOLD = 35.0
 
-        img = load_img(BytesIO(image_file.read()), target_size=image_size)
-        img_array = img_to_array(img)
-        img_array = expand_dims(img_array, 0) # Cria um batch
+        path_to_model = Path('./models/best.pt')
 
-        predictions = model.predict(img_array)
-        score = softmax(predictions[0])
+        # 1. Leitura e decodificação da imagem com OpenCV
+        # Lê o arquivo em memória para um array NumPy, que é o formato que o OpenCV e o YOLO entendem
+        file_bytes = np.fromstring(image_file.read(), np.uint8)
+        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+        # 2. Carregar o modelo treinado YOLO
+        model = YOLO(path_to_model.resolve())
+
+        # 3. Realizar a predição na imagem carregada
+        # 'verbose=False' evita logs excessivos do YOLO no console do servidor
+        results = model.predict(source=img, verbose=False)
+
+        # 4. Processar os resultados da detecção
+        result = results[0]  # Pega os resultados da primeira (e única) imagem
         
-        predicted_class = class_names[argmax(score)]
-        confidence = 100 * max(score)
+        predicted_class = "Vazio"
+        confidence = 0.0
 
+        if result.boxes: # Verifica se alguma detecção foi feita
+            # Encontra a detecção com a maior confiança
+            top_prediction_index = result.boxes.conf.argmax()
+            top_confidence_tensor = result.boxes.conf[top_prediction_index]
+            top_class_id = result.boxes.cls[top_prediction_index]
+
+            # Converte os tensores do PyTorch para valores Python e ajusta a confiança para porcentagem
+            confidence = round(top_confidence_tensor.item() * 100, 2)
+            predicted_class = result.names[top_class_id.item()]
+
+        # 5. Aplicar a lógica do limiar de confiança
         if confidence < THRESHOLD:
             logging.info(
                 f"Previsão descartada. Confiança de {confidence:.2f}% é inferior ao limiar de {THRESHOLD}%."
             )
-
+            # Retorna "Vazio" mas mantém a confiança real para fins de log ou debug
             return "Vazio", confidence
 
         logging.info(
             f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança."
         )
 
-        print(f"A imagem enviada pertence à classe '{predicted_class}' com {confidence:.2f}% de confiança.")
-        
         return predicted_class, confidence
 
     except Exception as e:
