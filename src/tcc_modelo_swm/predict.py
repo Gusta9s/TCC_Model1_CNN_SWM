@@ -1,3 +1,7 @@
+"""
+    Processo responsavel por carregar as dependências e fazer a predição em uma imagem recebida.
+"""
+
 import logging
 from ultralytics import YOLO
 import cv2
@@ -5,6 +9,7 @@ import numpy as np
 from pathlib import Path
 
 def predict_on_image(config: dict, image_file):
+
     """
     Carrega um modelo treinado YOLO e faz uma previsão em uma única imagem recebida como arquivo.
     
@@ -17,8 +22,8 @@ def predict_on_image(config: dict, image_file):
     """
 
     try:
-        # Define o limiar de confiança mínimo (ex: 35%)
-        THRESHOLD = 35.0
+        # Define o limiar de confiança mínimo (ex: 80%)
+        THRESHOLD = 80.0
 
         path_to_model = Path('./models/best.pt')
 
@@ -35,13 +40,14 @@ def predict_on_image(config: dict, image_file):
         results = model.predict(source=img, verbose=False)
 
         # 4. Processar os resultados da detecção
-        result = results[0]  # Pega os resultados da primeira (e única) imagem
+        result = results[0]
         
         predicted_class = "Vazio"
         confidence = 0.0
 
-        if result.boxes: # Verifica se alguma detecção foi feita
-            # Encontra a detecção com a maior confiança
+        # Verifica se alguma detecção foi feita
+        # Encontra a detecção com a maior confiança
+        if result.boxes: 
             top_prediction_index = result.boxes.conf.argmax()
             top_confidence_tensor = result.boxes.conf[top_prediction_index]
             top_class_id = result.boxes.cls[top_prediction_index]
@@ -50,7 +56,7 @@ def predict_on_image(config: dict, image_file):
             confidence = round(top_confidence_tensor.item() * 100, 2)
             predicted_class = result.names[top_class_id.item()]
 
-        # 5. Aplicar a lógica do limiar de confiança
+        # 5. Aplicar a lógica do limiar de confiança (verifica se a confiança é suficiente)
         if confidence < THRESHOLD:
             logging.info(
                 f"Previsão descartada. Confiança de {confidence:.2f}% é inferior ao limiar de {THRESHOLD}%."
@@ -64,6 +70,7 @@ def predict_on_image(config: dict, image_file):
 
         return predicted_class, confidence
 
+    # Tratamento de exceções para capturar erros durante o processo de predição
     except Exception as e:
         logging.error(f"Ocorreu um erro durante a predição: {e}")
         return None, None

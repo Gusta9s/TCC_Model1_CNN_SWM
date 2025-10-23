@@ -10,18 +10,10 @@ data:
 
 # Configuração do Modelo
 model:
-  input_shape: [256, 256, 3] # Altura, Largura, Canais (deve corresponder a image_size e color_mode)
-  num_classes: 4 # Número de classes (lata, vasilha, caixa_de_detergente e etc.)
-
-# Configuração do Treinamento
-training:
-  epochs: 20
-  optimizer: "adam"
-  loss_function: "sparse_categorical_crossentropy" # Use 'categorical_crossentropy' se suas labels forem label_mode = 'int'
-  learning_rate: 0.001
-  metrics: ["accuracy"] 
+  input_shape: [256, 256, 3] # Altura, Largura, Canais
+  num_classes: 4 # Número de classes
 
 # Configuração da Previsão
+# Mapeamento de índice para nome de classe
 prediction:
-  # Mapeamento de índice para nome de classe
   class_names: ["caixa_de_papelao", "garrafa", "lata", "tenis"]

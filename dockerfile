@@ -1,10 +1,7 @@
-# Use a imagem base do Bitnami para PyTorch
-FROM bitnami/pytorch:latest
+# 1. Usamos uma imagem base estável do PyTorch oficial (CPU, baseada no Ubuntu 22.04)
+FROM pytorch/pytorch:latest
 
-# 1. Mude temporariamente para o usuário root para poder instalar pacotes do sistema
-USER root
-
-# 2. Atualize a lista de pacotes e instale as dependências do OpenCV
+# 2. Instale as dependências de sistema para OpenCV e FFmpeg (executado como root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -14,29 +11,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 3. Volte para o usuário não-root padrão da imagem Bitnami para seguir as boas práticas
-USER 1001
-
-
-# Defina o diretório de trabalho dentro do container
+# 3. Crie um diretório de trabalho e um usuário não-root para a aplicação
 WORKDIR /app
+RUN useradd -ms /bin/bash appuser
 
-# Copia o arquivo de requisitos e instala as bibliotecas Python.
-# O --chown garante que o arquivo copiado pertença ao usuário não-root.
-COPY --chown=1001:1001 requirements.txt .
+# 4. Copie o arquivo de requisitos e instale as dependências Python.
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copie os arquivos do seu projeto para o container
-COPY . /app
+# 5. Copie o restante do código da aplicação
+COPY . .
 
-# Apenas cria o diretório. Como o build já roda como não-root, ele será o dono.
-RUN mkdir -p /app/logs
+# 6. Crie o diretório de logs e ajuste as permissões para o novo usuário
+RUN mkdir logs && chown -R appuser:appuser /app
 
-# Exponha a porta 3001 para acesso externo
+# 7. Mude para o usuário não-root
+USER appuser
+
+# 8. Exponha a porta 3001 para acesso externo
 EXPOSE 3001
 
-# Define que o executável padrão do contêiner é o python
+# 9. Defina o ponto de entrada e o comando padrão para executar a aplicação
 ENTRYPOINT ["python"]
-
-# Define que o argumento padrão para o executável é o nosso script
 CMD ["app.py"]
