@@ -22,8 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5. Copie o restante do código da aplicação
 COPY . .
 
-# 6. Crie o diretório de logs e ajuste as permissões para o novo usuário
-RUN mkdir logs && chown -R appuser:appuser /app
+# 6. Crie os logs e garanta que o appuser seja dono de tudo o que foi copiado
+RUN mkdir -p logs && chown -R appuser:appuser /app
 
 # 7. Mude para o usuário não-root
 USER appuser
