@@ -24,8 +24,9 @@ def gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, de
         @return: Resposta da API de rotas.
     """
 
-    # O endereço do serviço de rotas
-    url_api_rotas = "http://host.docker.internal:3004/api/gerar-imagem-rota"
+    # PEGA A URL DA VARIÁVEL DE AMBIENTE (Definida no docker-compose)
+    # Se não existir, usa o localhost como fallback
+    base_url = os.getenv('ROUTING_API_URL', "http://localhost:3004/api/gerar-imagem-rota")
 
     # O payload (dados) que a API espera, em formato de dicionário Python
     payload = {
@@ -40,11 +41,11 @@ def gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, de
         "Content-Type": "application/json"
     }
 
-    print(f"-> Enviando requisição para {url_api_rotas} com payload: {payload}")
+    print(f"-> Enviando requisição para {base_url} com payload: {payload}")
 
     try:
         # Faz a requisição POST.
-        response = post(url_api_rotas, json=payload)
+        response = post(base_url, json=payload)
 
         # Verifica se a requisição foi bem-sucedida (código de status 2xx), caso não, lança exceção com erro e finaliza pilha de execução.
         response.raise_for_status()
