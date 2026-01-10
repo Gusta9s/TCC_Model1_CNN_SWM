@@ -3,6 +3,7 @@ FROM pytorch/pytorch:latest
 
 # 2. Instale as dependências de sistema para OpenCV e FFmpeg (executado como root)
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
