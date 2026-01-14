@@ -1,6 +1,7 @@
 # Configuração Geral do Projeto
 project_name: "TCC_Modelo_TensorFlow_SWM"
 log_file: "logs/app.log"
+url_roting_api: "http://localhost:3004/api/gerar-imagem-rota"
 
 # Configuração dos Dados
 data:

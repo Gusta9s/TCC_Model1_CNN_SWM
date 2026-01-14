@@ -13,7 +13,7 @@ from src.tcc_modelo_swm.predict import predict_on_image
 
 app = Flask(__name__)
 
-def gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, destino_longitude):
+def gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, destino_longitude, url_roting_api):
     
     """
         Envia uma requisição POST para a API de rotas.
@@ -25,8 +25,7 @@ def gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, de
     """
 
     # PEGA A URL DA VARIÁVEL DE AMBIENTE (Definida no docker-compose)
-    # Se não existir, usa o localhost como fallback
-    base_url = os.getenv('ROUTING_API_URL', "http://localhost:3004/api/gerar-imagem-rota")
+    base_url = os.getenv('ROUTING_API_URL', url_roting_api)
 
     # O payload (dados) que a API espera, em formato de dicionário Python
     payload = {
@@ -140,7 +139,7 @@ def predict():
     predicted_class, confidence = predict_on_image(config, image_file)
     
     if ((float(confidence) >= 80.0) and (predicted_class != "Vazio")):
-        resultado_rota = gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, destino_longitude)
+        resultado_rota = gerar_imagem_de_rota(origem_latitude, origem_longitude, destino_latitude, destino_longitude, config['url_roting_api'])
         
         if resultado_rota['status'] == 'sucesso':
             payload_da_rota = resultado_rota.get('payload', {})
