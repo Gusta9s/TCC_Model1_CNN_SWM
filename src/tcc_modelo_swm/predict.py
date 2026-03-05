@@ -29,7 +29,7 @@ def predict_on_image(config: dict, image_file):
 
         # 1. Leitura e decodificação da imagem com OpenCV
         # Lê o arquivo em memória para um array NumPy, que é o formato que o OpenCV e o YOLO entendem
-        file_bytes = np.fromstring(image_file.read(), np.uint8)
+        file_bytes = np.frombuffer(image_file.read(), np.uint8)
         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
         # 2. Carregar o modelo treinado YOLO
